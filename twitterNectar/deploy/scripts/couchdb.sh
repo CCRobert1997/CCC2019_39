@@ -1,3 +1,8 @@
+#Shangyu Chen 743125
+#Xiangxue Li 762925
+#Xiyue Wang 683843
+#Yuemin Huang 752563
+#Zhixin Lin 971382
 node=$1
 docker rm -f $(docker ps -a -q)
 

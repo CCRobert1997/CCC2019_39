@@ -1,3 +1,8 @@
+#Shangyu Chen 743125
+#Xiangxue Li 762925
+#Xiyue Wang 683843
+#Yuemin Huang 752563
+#Zhixin Lin 971382
 from searchtweets import ResultStream, gen_rule_payload, load_credentials,collect_results
 import couchdb
 import time
