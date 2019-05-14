@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = 'utf-8'>
+    <title> Data Analysis</title>
+</head>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<body>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <title>
+        Data Analysis
+    </title>
+
+    <link href="static/analysisstyle.css", rel="stylesheet">
+    <h1>
+        Data Analysis
+    </h1>
+    <main>
+        <article>
+
+        <p>
+        In this section, we wil use the processed data from tweets to do data analysis.
+        </p>
+        <h2>
+        Why we focus on envy
+        </h2>
+        <p>
+        The analysis focused on tweets that express envy and the likely causes of these envy emotions. 
+        Envy is generally considered negative and potentially dangerous, 
+        as extreme envy may trigger certain harmful behaviors on others, 
+        or lead to the person himself suffer from a serious mental health problem. 
+        In this analysis, we explored the common objects that people are envious about and the relationship
+        between envy and other factors such as education level and cultural background, aiming to discover 
+        the causes of envious emotion.
+        </p>
+        <p>
+        The following sections detail how we analyzed the collected tweets alongside 
+        the 2016 Census data. Section 1 discovers the common content in these “envy tweets” using the hashtags
+        and shows the pattern of the number of “envy tweets” created over the different time range of a day. 
+        Section 2 explores the relationship between envy and four factors, namely education level, employment type,
+        income, and cultural background, separated into four scenarios.
+        And finally, the limitations of these analyses are discussed in Section 3.
+        </p>
+        <h2>
+        Section 1: General analysis of envy tweets
+        </h2>
+        <h3>
+        # Common content
+        </h3>
+        <p>
+        Fristly, we are interested in knowing the common content or topics discussed in these “envy tweets”.
+        For this purpose, we counted the hashtags in each area and the table below lists the hashtags that
+        appeared more than once for the corresponding area. Note that cities that do not have hashtags 
+        appeared more than once are not shown.        
+        </P>
+        <table>
+        <caption> Hashtags appeared more than once </caption>
+        <tr>
+            <td>&nbsp;</td>
+            <td>Hashtags</td>
+        </tr>
+        <tr>
+            <td> Melbourne </td>
+            <td> 9Married, democratically, envious, envy, GMS, GMSequation, jealous, peace </td>
+        </tr>
+        <tr>
+            <td>Sydney </td>
+            <td> 9Married, jealous, JustDessertsAU, MarriedAtFirstSight, VMAs, VoteDNCE </td>
+        </tr>
+        <tr>
+            <td> Newcastle </td>
+            <td> FoxSportsLive, NUFC, Pokemon3, selfie </td>
+        </tr>
+        <tr>
+            <td> Brisbane </td>
+            <td> qanda, StevenUniverse, TheresOnlyOne</td>
+        </tr>
+        </table>
+        <p>
+        Some TV shows/channels can be recognized in the hashtags, for example, “9Married”,
+         “MarriedAtFirstSight” and “FoxSportsLive”, which indicate that people talk much more about TV shows on Twitter. 
+         Furthermore, based on the information above, people in Melbourne seem have more emotional hashtags than people in other place. 
+        </p>
+
+        <h3>
+        # Timeline
+        </h3>
+        <p>
+        Following last part of section, we wished to see if there is any pattern in time with the number of tweets posted 
+        and whether there is any difference between areas/states.
+        This may give us some insight into what time people are likely to feel envious. 
+        </p>
+        <p>
+        As shown in the figures below, the times in a day are divided into four six-hour range
+        and each of the three line charts below shows the cities in a state.
+        </P>
+
+        <div id="container1" style="min-width: 70%; height: 500px; margin: 30px auto"></div>
+        <script src= 'graph1.js'></script>
+
+        <div id="container2" style="min-width: 70%; height: 500px; margin: 30px auto "></div>
+        <script src= 'graph2.js'></script>
+
+        <div id="container3" style="min-width: 70%; height: 500px; margin: 30px auto "></div>
+        <script src= 'graph3.js'></script>
+        <p>
+        All cities except Newcastle had most tweets posted in the morning (6am to 12pm) and least tweets in the afternoon 
+        (12pm to 6pm), while for Newcastle, the number of “envy tweets” increases as the time goes in a day.
+        It does not seem to align with our guess followed from the previous content analysis, as most Twitter users are likely
+        to work or study in the morning. Hence, the content analysis may not capture the causes of envy very well. It is also 
+        important to note that the average number of “envy tweets” is largely dominated by the number of tweets in the capital 
+        cities of each state, namely Melbourne, Sydney and Brisbane.
+        </P>
+        <p>
+         To reduce the effect of this on the subsequent analyses, we decided to normalise the number of tweets by a population 
+         factor of each area. Details of the normalisation method is explained in the next section.
+        </p>
+        <h2>
+        Section 2: Scenarios
+        </h2>
+
+        <h3>
+         # Normalisation of tweet number for each area
+        </h3>
+        <p>
+        Due to the limitation of Twitter harvest, we can only retrieved up to 100 tweets per request and some cities (e.g. Sydney) 
+        might have more than 100 tweets in the specified time window, i.e. August 2016. On the other hand, as we have a relatively 
+        small set of keywords, for some cities (e.g. Bendigo) we were only able to collect a few tweets under the specified time range,
+        i.e. August 2016. To compensate the shortcomings of data collection, we developed the following steps to estimate the number of
+        “envy tweets” in each city per year.
+        </p>
+        <p>
+        For each keyword in each area:
+        </p>
+        <ol>
+        <li>
+        Count the total number of “envy tweets”, denoted as n
+        </li>
+        <li>
+        Find the earliest date among these tweets
+        </li>
+        <li>
+        Calculate the number of days that these tweets covered, denoted as day_range
+        </li>
+        <li>
+        Estimate the total number of tweets containing this keyword in this area, which is n * 365 / day_range
+        </li>
+        </ol>
+        <p>
+        After applying the above steps, we obtained an estimation of the tweet number for each keyword,
+         and by summing up all keywords, we get the estimated total number of “envy tweets” for each area per year.
+        </p>
+        <p>       
+        As discussed in the previous section, the Twitter data also have the problem that capital cities generally 
+        have much more Tweets than the other cities, which can greatly reduces the validity of the subsequent 
+        correlation analyses. We therefore normalised the estimated number of “envy tweets” for each area using a population factor. 
+        We normalise the number of tweets by multiply by 30%*0.01, because around 30% of residents are tweets users
+        and multiplied the total population by 0.001 to avoid getting the 
+        normalised number extremely small without losing generality.We will use the normalised number
+        in the following four scenarios to calculate correlations.
+        </p>
+        <h3>
+        # Relationship with education level
+        </h3>
+        <p>
+        In this scenario, we studied the relationship between the number of “envy tweets” appeared in each city and the education level,
+         e.g. the percentage of residents completed Year 12 or equivalent. The table below shows the correlation coefficients.
+        </p>
+
+        <table>
+        <caption> Correlations between Education Level and Number of tweets </caption>
+        <tr>
+            <td>Education Level</td>
+            <td> Correlations/td>
+        </tr>
+        <tr>
+            <td>Persons with Postgraduate degree </td>
+            <td> 0.61 </td>
+        </tr>
+        <tr>
+            <td>Persons With Post School Qualification </td>
+            <td> 0.57 </td>
+        </tr>
+        <tr>
+            <td>Completed Year 12 or equivalent </td>
+            <td> 0.52 </td>
+        </tr>
+        <tr>
+            <td>Completed Year 9 or equivalent </td>
+            <td> -0.31 </td>
+        </tr>
+        <tr>
+            <td> Did not go to school </td>
+            <td> -0.05 </td>
+        </tr>
+        </table>
+        <p>
+        While it is natural to think that people might envy others who have a higher education level,
+         the correlation coefficients above show the opposite. Surprisingly, the number of “envy tweets” 
+         has the highest correlation with the percentage of persons with postgraduate degree, 
+         which might suggest that people with higher education level may not always satisfied with their
+          lives and would aim for something higher. Therefore, they are even more likely to envy others.
+           The two charts below shows the percentage of persons with postgraduate degree and that of persons 
+           completed Year 9 respectively, which gives us more insights into our chosen cities. 
+        </p>
+
+        <div id="container4" style="min-width: 70%; height: 500px; margin: 30px auto"></div>
+        <script src= 'graph4.js'></script>
+        
+        <div id="container5" style="min-width: 70%; height: 500px; margin: 30px auto"></div>
+        <script src= 'graph5.js'></script>
+        <h3>
+        # Relationship with employment type
+        </h3>
+        <p>
+        The second scenario explores the relationship between envy and employment type. The 2016 census data 
+        provides us the information on the percentage of persons on several employment types, e.g. managers,
+         professionals, community workers etc., and we have utilised this information to analyse if any of the 
+         employment type may associate with envy. Again, we calculated the correlations between the number of 
+         “envy tweets” and the percentage of each employment type. The correlation coefficients are listed below:
+         </p>
+
+        <table>
+        <caption> Correlations between Employment Type and Number of tweets </caption>
+        <tr>
+            <td>Employment Type</td>
+            <td> Correlation</td>
+        </tr>
+        <tr>
+            <td>Clerical, Administrative Workers </td>
+            <td> -0.42 </td>
+        </tr>
+        <tr>
+            <td>Community, Personal Service Workers  </td>
+            <td> -0.37 </td>
+        </tr>
+        <tr>
+            <td>Labourers </td>
+            <td> -0.62 </td>
+        </tr>
+        <tr>
+            <td>Machinery Operators, Drivers</td>
+            <td> -0.59 </td>
+        </tr>
+        <tr>
+            <td> Managers </td>
+            <td> 0.35 </td>
+        </tr>
+        <tr>
+            <td> Professionals </td>
+            <td> 0.7 </td>
+        </tr>
+         <tr>
+            <td> Sales Workers </td>
+            <td> -0.63 </td>
+        </tr>
+         <tr>
+            <td> Technicians and Trades Workers</td>
+            <td> -0.62 </td>
+        </tr>
+         <tr>
+            <td> Unemployment rate </td>
+            <td> 0.38 </td>
+        </tr>
+        </table>
+        <p>
+        Interestly, among all the employment types, managers and professionals 
+        have positive correlation with envy, and in contrast, labourers, sales workers, 
+        as well as technicians and trades workers are negatively correlated with envy.
+         Similar to the analysis on education level, the finding seems to contradict with our 
+         general understanding that people may envy other who have a superior job. The correlations,
+          on the other hand, might suggest that managers and professionals are more likely to envy 
+          others as they would constantly improve their quality of life. The percentages of labourers 
+          and professionals are compared to the number of “envy tweets” in each city in the two figures below.
+        </p>
+
+        <div id="container6" style="min-width: 70%; height: 500px; margin: 30px auto"></div>
+        <script src= 'graph6.js'></script>
+
+        <div id="container7" style="min-width: 70%; height: 500px; margin: 30px auto"></div>
+        <script src= 'graph7.js'></script>
+
+        <h3># Relationship with income and economics</h3>
+        <p>In the third scenarios, we are interested in the association between envy and people’s income.
+         It might seem common that people would envy others who are wealthier and/ earn more from their jobs,
+          own business or investments etc. Here we calculated the correlation coefficients between the number of 
+          “envy tweets” and a number of income related factors, such as median total income, median household weekly 
+          income, median age of income earners and Gini coefficient. The correlation coefficients are listed below.       
+        </p>
+        <table>
+        <caption> Correlations between Income and Number of tweets </caption>
+        <tr>
+            <td>Income </td>
+            <td> Correlations </td>
+        </tr>
+        <tr>
+            <td>Median Total income</td>
+            <td> 0.29 </td>
+        </tr>
+        <tr>
+            <td>Median equivalised total household income (weekly) </td>
+            <td> 0.39 </td>
+        </tr>
+        <tr>
+            <td>Total income earners - median age</td>
+            <td> -0.61 </td>
+        </tr>
+        <tr>
+            <td> Gini coefficient </td>
+            <td> 0.61 </td>
+        </tr>
+        </table>
+
+        <div id="container8" style="min-width: 70%; height: 500px; margin: 30px auto"></div>
+        <script src= 'graph8.js'></script>
+        <p>
+        Though income has a positive correlation with envy, it is not as strong as we might 
+        have expected. Gini coefficient, however, presents higher positive correlation with envy.
+         Gini coefficient can be considered as a statistical measure of income inequality.
+          Higher the Gini coefficient, greater variation of income the area has. The finding seems
+           aligned with our intuition that in cities where the income variation is higher, people are
+            more likely to feel envious towards other. While looking at the bar chart above, 
+            it is important to noticed that the Gini coefficient do not differ much across the chosen 
+            areas (all fall within 0.36 - 0.6), and thus more data points are need to validate our finding.
+        </p>
+        <h3># Relationship with cultural background</h3>
+        <p>
+        The fourth scenarios will be focusing on the relationship between human cultural background and envy.
+         From the tweets data we collected, it provides us the percentage of people with different cultural background, 
+         for example, born in Americas, born in Asia, born in Europe, etc.
+          We would like to discover if there any association between cultural background and envy. 
+          The table below is showing the correlation coefficient between percentage of different cultural background and number of ‘envy tweets’.
+        </p>
+        <table>
+        <caption> Correlations between Personal History and Number of tweets </caption>
+        <tr>
+            <td>&nbsp;</td>
+            <td> Correlations</td>
+        </tr>
+        <tr>
+            <td>Born in Americas </td>
+            <td> 0.5 </td>
+        </tr>
+        <tr>
+            <td>Born in Asia </td>
+            <td> 0.57 </td>
+        </tr>
+        <tr>
+            <td>Born in Europe </td>
+            <td> 0.08 </td>
+        </tr>
+        <tr>
+            <td>Born in North Africa, Middle East</td>
+            <td> 0.5 </td>
+        </tr>
+        <tr>
+            <td> Born in Oceania, Antarctica (exc. Australia) </td>
+            <td> -0.15 </td>
+        </tr>
+        <tr>
+            <td> Total Born Overseas </td>
+            <td> 0.5 </td>
+        </tr>
+        </table>
+        
+        <p>
+        The table above shows that people born in Asia has the largest correlation coefficient, which is 0.57.
+         It indicates that people who born in Asia posted more envy tweets than people with other cultural background.
+          From personal experiences and understanding, this probably because people from Asia have more competitions. 
+          People always make comparison with others. However, people born in Europe have least positive correlation coefficient
+           with number of envy tweets, which is 0.08. The reason why this happened probably is most Europe countries are developed countries,
+            there are not much crural competition. People do not have much emotions such ‘jealous’, ‘envy’ in such enjoyable environment.
+            The next  graph is showing us the percentage of people born in Asia and normalised number of ‘envy tweets’ in ten cities based on the data we collected.
+        </p>
+        <div id="container9" style="min-width: 70%; height: 500px; margin: 30px auto"></div>
+        <script src= 'graph9.js'></script>
+        <p>
+        From the diagram above, the city with the most people born in Asia in Melbourne, and the second most is Sydney, the third one is Brisbane. It demonstrates
+         that Asian people most likely stay in big cities. Among those big cities, Melbourne and Sydney have the second and third most number of ‘envy tweets’. 
+         It seems that percentage of people born in Asia has positive relationship with normalised number of envy tweets. However, in Newcastle, there is 4.6% 
+             people born in Asia, but has 236 normalised tweets per year, which is a high negative relationship. Therefore, further validate is needed to indicate their relationship.
+        </p>
+        <p>
+        The next  graph is showing us the percentage of people born in Europe  and normalised number of ‘envy tweets’ in ten cities.
+        </p>
+    
+        <div id="container10" style="min-width: 70%; height: 500px; margin: 30px auto"></div>
+        <script src= 'graph10.js'></script>
+        <p>
+        From the correlation coefficient, we already realise that people born in Europe has a small relationship with number of ‘envy tweets’, and based on the diagram above,
+         we find out there no significant relationship. 
+        </p>
+        <h2>
+        Section 3: Limitations
+        </h2>
+        <p>
+        There is no doubt that our analysis has great limitations from data collection to correlation analysis. 
+        More data and advanced statistical techniques are needed to validate any findings we present. 
+        The findings only give us some information on the selected cities and cannot be generalised to make 
+        any inference on all cities in Australia. It is important to keep in mind the limitations when interpreting
+         the visualisations and correlation results. Some suggestions to improve our analysis are also discussed below.
+         </p>
+         <ul>
+         <li>
+         More research on “envy” expression from the perspective of text analysis: our analysis chose a few “envy” related
+          keyword to identify tweets that express envious emotion. However, it is unknown that whether the tweets containing
+           these keywords are indeed related to envy. People express their feelings in many different way and it is unrealistic
+            to say that only the tweets with a specific keyword show envy emotion. A larger set of keywords is needed with more 
+            advanced text analysis to improve the accuracy of identifying “envy tweets”. In addition, it is possible to develop a 
+            scoring system to indicate the level of envy for each tweet, similar to a sentiment analysis. 
+        </li>
+        <li>
+        Use the percentage of “envy tweets” out of all tweets in the correlation analysis: although we have applied multiple
+         normalised technique to reduce the effect of population of each area, findings from correlation analysis left us with
+          the questions that if the strong correlation between education level, e.g. percentage of postgraduate, and envy is
+           due to the dissatisfaction that people feel, or it is actually because people with postgraduate degree are more likely 
+           to use Twitter than people with a lower education level. Using percentage of “envy tweets” rather than the actual number
+            of tweets could be one way to help us understand the relationship better. 
+        </li>
+        </ul>
+
+        </article>
+        <aside>
+                <ul>
+                <li>
+                    <a href= "home">Home Page</a>
+                </li>
+                <li>
+                    <a href="analysis">Data Analysis</a>
+                </li>
+                <li>
+                    <a href="member">Team Member</a>
+                </li>
+         </ul>
+        </aside>
+        </main>
+    </body>
+
+    </html>
